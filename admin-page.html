@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin page</title>
+    <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+
+        *{
+            font-family: 'Montserrat', sans-serif;
+
+        }
+
+
+        body{
+
+        background-color: #111317;
+
+        }
+
+        .add-member{
+            display: flex;
+            flex-direction: column;
+            margin-left: 40px;
+
+        }
+
+        h1{
+            color: #ffffff;
+        }
+        label{
+            width: 50px;
+        }
+
+        label{
+            color: #d1d5db;
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        input,select{
+            width: 500px;
+            height: 30px;
+            border: none;
+
+        }
+        input[type=text]{
+            font-size: 20px;
+            border: none;
+        }
+
+        button{
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="add-member">
+    <h1>ADD MEMBER</h1>
+  
+    <label>Name</label>
+    <input type="text" id="namebox">
+    <br>
+    <label>gymId</label>
+    <input type="text" id="gymId">
+    <br>
+    <label>Number</label>
+    <input type="number" id="number">
+    <br>
+    <label>Email</label>
+    <input type="text" id="email">
+    <br>
+    <label>Gender</label>
+    <select name="gender" id="genbox">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+    </select>
+    <br>
+    <label>Gym Time</label>
+    <select name="Timings" id="timings">
+        <option value="5:00AM-11:00AM">5:00AM-11:00AM</option>
+        <option value="4:00PM-9:00PM">4:00PM-9:00PM</option>
+    </select>
+    <br>
+    <label>Aadhar Number</label>
+    <input type="text" id="aadhar">
+    <br>
+    <label>Age</label>
+    <input type="number" id="age">
+    <br>
+
+    <button id="instbtn">Insert</button>
+    <button id="selbtn">Select</button>
+    <button id="uptbtn">Update</button>
+    <button id="delbtn">Delete</button>
+
+    </div>
+
+    <a href=""><h1>REGISTER MEMBER</h1></a>
+
+
+
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBpgxMGLnz-A_wPB4Fc0AOvYQhaWmTlCI4",
+      authDomain: "member-details-8bdeb.firebaseapp.com",
+      projectId: "member-details-8bdeb",
+      storageBucket: "member-details-8bdeb.appspot.com",
+      messagingSenderId: "539175562281",
+      appId: "1:539175562281:web:02cb7a789a931d911cc038",
+      measurementId: "G-3Q8Y0G2SWX"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    import{getDatabase,ref, set ,get ,child,update, remove}
+    from "https://www.gstatic.com/firebasejs/10.12.3/firebase-database.js";
+
+    const db = getDatabase();
+
+
+    var namebox = document.getElementById("namebox");
+    var gymId = document.getElementById("gymId");
+    var number = document.getElementById("number");
+    var email = document.getElementById("email");
+    var genbox = document.getElementById("genbox");
+    var timings = document.getElementById("timings");
+    var aadhar = document.getElementById("aadhar");
+    var age = document.getElementById("age");
+
+
+
+
+    var instbtn = document.getElementById("instbtn");
+    var selbtn = document.getElementById("selbtn");
+    var uptbtn = document.getElementById("uptbtn");
+    var delbtn = document.getElementById("delbtn");
+
+    function InsertData(){
+        set(ref(db, "theMember/"+gymId.value),{
+            name:namebox.value,
+            gymid:gymId.value,
+            number:number.value,
+            email:email.value,
+            gender:genbox.value,
+            timings:timings.value,
+            aadhar:aadhar.value,
+            age:age.value
+
+        })
+        .then(()=>{
+            alert("data stored succesufully");
+        })
+        .catch(()=>{
+            alert("unsuccessful , error"+Error);
+        });
+    }
+
+    function selectData(){
+        const dbref = ref(db);
+
+        get(child(dbref,"theMember/"+gymId.value)).then((snapshot)=>{
+            if(snapshot.exists()){
+                namebox.value = snapshot.val().name;
+                number.value = snapshot.val().number;
+                email.value = snapshot.val().email;
+                genbox.value = snapshot.val().gender;
+                timings.value = snapshot.val().timings;
+                aadhar.value = snapshot.val().aadhar;
+                age.value = snapshot.val().age;
+            }
+            else{
+                alert("no data");
+            }
+        })
+        .catch((Error)=>{
+            alert("uncessuful")
+        })
+    }
+
+
+    function updateData(){
+        update(ref(db, "theMember/"+gymId.value),{
+            name:namebox.value,
+            number:number.value,
+            email:email.value,
+            gender:genbox.value,
+            timings:timings.value,
+            aadhar:aadhar.value,
+            age:age.value
+        })
+        .then(()=>{
+            alert("data updated succesufully");
+        })
+        .catch(()=>{
+            alert("unsuccessful , error"+Error);
+        });
+    }
+
+
+    function deleteData(){
+        remove(ref(db, "theMember/"+gymId.value))
+        .then(()=>{
+            alert("data deleted succesufully");
+        })
+        .catch(()=>{
+            alert("unsuccessful , error"+Error);
+        });
+    }
+
+    instbtn.addEventListener('click',InsertData);
+    selbtn.addEventListener('click',selectData);
+    uptbtn.addEventListener('click',updateData);
+    delbtn.addEventListener('click',deleteData);
+
+
+  </script>
+
+</body>
+
+
+</html>
